@@ -2,18 +2,21 @@ from flask import Flask, request, jsonify
 from flask_jwt_extended import JWTManager, create_access_token,create_refresh_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import db, User, Item
+from flask_migrate import Migrate
 from datetime import timedelta
 
 # Initialize Flask app
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
 app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['JWT_SECRET_KEY'] = 'your_jwt_secret_key'
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)
+jwt = JWTManager(app)
+
 
 # Initialize extensions
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///items.db'
 db.init_app(app)
-jwt = JWTManager(app)
+migrate = Migrate(app, db)
 
 # Routes
 
